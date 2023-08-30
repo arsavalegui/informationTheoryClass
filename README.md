@@ -6,7 +6,7 @@ Estructura del sistema de comunicacón:
 El sistema simulará el envio de datagramas en video juegos online usando UDP, en concreto fortnite.
 
 - Fuente de información:
-    Se usará la representación de un datagrama que incluirá un identificador de jugador, su posicion en coordenadas (x,y), inventario de armas, salus y movimientos que esté realizando.
+    Se usará la representación de un datagrama que incluirá un identificador de jugador, su posicion en coordenadas (x,y,z), inventario de armas y salud.
 
 - Transmisor:
     Se usará un medio wifi por protocolo UDP. Concretamente con el wifi 802.11ax o wifi 6.
