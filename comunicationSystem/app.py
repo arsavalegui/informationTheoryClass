@@ -7,7 +7,7 @@ class WiFi:
         self.password = password
     
     def transmitir(self, data):
-        print(f"Transmitiendo datagrama: {data} a través del router hacia el transmisor\n")
+        print(f"Transmitiendo datagrama a través del router hacia el transmisor\n")
         return data
     
     def recibir(self, data):
@@ -34,7 +34,9 @@ class Transmisor:
                                   data["Using_emote"].encode(),
                                     data["Player_glider"].encode())
 
-        print(f"Datagrama codificado: {packed_data}\n")
+        binary_str = ''.join(format(byte, '08b') for byte in packed_data)
+        print(f"Datagrama codificado: {binary_str}\n")
+
         return packed_data
 
 class Canal:
@@ -47,11 +49,11 @@ class Canal:
         print(f"Canal enviando datagrama codificado a destino...\n")
 
     def recibir(self):
-        print(f"Canal recibiendo el datagrama codificado: {binaryData}\n")
+        print(f"Canal recibiendo el datagrama codificado...\n")
 
     def ruido(self, binaryData, probabilidad):
         # print(binaryData)
-        print("Ha habido una perdida de datos\n")
+        print("\n")
 
         new_data = bytearray(binaryData)
         for i in range(len(new_data)):
@@ -66,10 +68,10 @@ class ConsolaNintendoSwitchOLED:
         self.nombre = nombre
     
     def recibir(self, binaryData):
-        print(f"{self.nombre} recibiendo datagrama: {binaryData}\n")
+        print(f"{self.nombre} recibiendo datagrama...\n")
     
     def decodificar(self, new_data, binaryData):
-        print(f"{self.nombre} decodificando datagrama: {new_data}\n")
+        print(f"{self.nombre} decodificando datagrama...\n")
 
         if(new_data == binaryData):
 
@@ -87,7 +89,8 @@ class ConsolaNintendoSwitchOLED:
             print(f"Los datos llegaron de manera correcta. {decoded_dict}")
 
         else:
-            print(f"Los datos llegaron con ruido. {new_data}")
+            decoded_data = new_data.decode('utf-8', 'ignore')
+            print(f"Los datos llegaron con ruido. {decoded_data}")
 
 routerTplink = WiFi(123)
 consola = ConsolaNintendoSwitchOLED("Nintendo switch de Alan")
@@ -100,7 +103,7 @@ datagram = {
     "Using_emote": requestRandomEmote(),
     "Player_glider": requestRandomGlider() 
 }
-# print(datagram)
+
 
 routerTplink.recibir(datagram)
 originalDatagram = routerTplink.transmitir(datagram)
@@ -109,8 +112,7 @@ transmisor.recibir(originalDatagram)
 binaryData = transmisor.codificar(originalDatagram)
 canal = Canal(binaryData)
 canal.recibir()
-new_data = canal.ruido(binaryData, 0.2)
+new_data = canal.ruido(binaryData, 0)
 canal.enviar()
 consola.recibir(new_data)
 consola.decodificar(new_data,binaryData)
-# canal.recibir(enviar_datagrama)
