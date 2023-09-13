@@ -1,5 +1,5 @@
 import struct
-
+from api import requestRandomSkin
 
 #Clases del sistema
 
@@ -19,6 +19,13 @@ class routerWifi:
         print("Router recibio datagrama")
         #return dato
 
+class transmisor:
+    def __init__(self, data):
+        self.data = data
+
+class datagram:
+    def __init__(self, data):
+        self.data = data
 
 class nintendoSwitch:
     def __init__(self, data):
@@ -48,6 +55,10 @@ datagramDict = {
 
 velocidadRouter = 100
 
+def codificar(datagrama):
+
+    print(datagrama)
+
 # Codificar el datagrama en binario
 id_value = datagramDict["id"]
 inventory_slot1 = datagramDict["Inventory"]["Slot1"].encode("utf-8")
@@ -62,5 +73,5 @@ binary_data = struct.pack(f"i5s17s20s17s20s3f", id_value, inventory_slot1, inven
                            coords[0], coords[1], coords[2])
 
 # Imprimir la representación en binario
-print(binary_data)
+codificar(datagramDict)
 
