@@ -4,29 +4,26 @@ import requests
 
 def requestRandomThing(df,columna):
 
-    id_random = random.choice(df[columna])
-
-    url = f"https://fortnite-api.com/v2/cosmetics/br/{id_random}"
-    
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        data = response.json()
-
-        return data['data']['name']
-
-    else:
-        print("Error en la solicitud:", response.status_code)
+    while True:
+        id_random = random.choice(df["ID"])
+        url = f"https://fortnite-api.com/v2/cosmetics/br/{id_random}"
+        
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            data = response.json()
+            return data['data']['name']
 
 
 #Skin random
 def requestRandomSkins():
 
-    df = pd.read_csv('./data/skinsFortnite.csv')  
+    df = pd.read_csv('./data/skinsFortnite.csv')
 
-    response = requestRandomThing(df,"ID")    
+    response = requestRandomThing(df, "ID")
 
     return response
+    
 
 #Emotes random
 def requestRandomEmote():

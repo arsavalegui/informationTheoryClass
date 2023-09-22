@@ -1,5 +1,6 @@
 import struct
 import random
+import math
 from api import requestRandomSkins, requestRandomEmote, requestRandomGlider
 
 class WiFi:
@@ -57,7 +58,11 @@ class Canal:
 
         new_data = bytearray(binaryData)
         for i in range(len(new_data)):
-            if random.random() < probabilidad:
+            a = random.random() 
+
+            umbral = [0.2, 0.4, 0.7, 0.9]
+
+            if probabilidad in umbral:
                 new_data[i] = random.randint(0, 255)
         return bytes(new_data)
 
@@ -86,33 +91,64 @@ class ConsolaNintendoSwitchOLED:
                 "Player_glider": unpacked_data[3].decode().strip('\x00')
             }
 
-            print(f"Los datos llegaron de manera correcta. {decoded_dict}")
+            print(f"Los datos llegaron de manera correcta. {decoded_dict}\n\n")
+            return 1
 
         else:
             decoded_data = new_data.decode('utf-8', 'ignore')
-            print(f"Los datos llegaron con ruido. {decoded_data}")
+            print(f"Los datos llegaron con ruido. {decoded_data}\n\n")
+
+            return 0
 
 routerTplink = WiFi(123)
 consola = ConsolaNintendoSwitchOLED("Nintendo switch de Alan")
 
-numrand = str(random.randint(100, 999))
+def datagramas(values):
 
-datagram = {
-    "id": numrand,
-    "Player_skin": requestRandomSkins(),
-    "Using_emote": requestRandomEmote(),
-    "Player_glider": requestRandomGlider() 
-}
+    numrand = str(random.randint(100, 999))
 
+    randParameter = random.choice(values)
 
-routerTplink.recibir(datagram)
-originalDatagram = routerTplink.transmitir(datagram)
-transmisor = Transmisor(originalDatagram)
-transmisor.recibir(originalDatagram)
-binaryData = transmisor.codificar(originalDatagram)
-canal = Canal(binaryData)
-canal.recibir()
-new_data = canal.ruido(binaryData, 0)
-canal.enviar()
-consola.recibir(new_data)
-consola.decodificar(new_data,binaryData)
+    datagram = {
+        "id": numrand,
+        "Player_skin": requestRandomSkins(),
+        "Using_emote": requestRandomEmote(),
+        "Player_glider": requestRandomGlider() 
+    }
+
+    routerTplink.recibir(datagram)
+    originalDatagram = routerTplink.transmitir(datagram)
+    transmisor = Transmisor(originalDatagram)
+    transmisor.recibir(originalDatagram)
+    binaryData = transmisor.codificar(originalDatagram)
+    canal = Canal(binaryData)
+    canal.recibir()
+    new_data = canal.ruido(binaryData, randParameter)
+    canal.enviar()
+    consola.recibir(new_data)
+    evento = consola.decodificar(new_data,binaryData)
+    return evento
+
+r = 0
+sr = 0
+
+values = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 0.9]
+
+total = len(values)
+
+for i in range(0,total):
+    evento = datagramas(values)
+    if(evento == 1):
+        sr = sr + 1
+    else:
+        r = r + 1
+
+print("Sin ruido", sr, "Con ruido", r)
+
+proba = 1/total
+
+entropia = - proba * math.log2(proba)
+
+entropia_total = entropia*r
+
+print("Entropía: ", entropia_total)
