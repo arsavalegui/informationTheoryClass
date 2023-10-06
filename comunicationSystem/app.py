@@ -19,10 +19,6 @@ class Transmisor:
     def __init__(self, data):
         self.data = data
 
-    def string_a_binario(cadena):
-        binario = ''.join(format(ord(char), '08b') for char in cadena)
-        return binario
-
     def transmitir(self, data):
         print(f"Transmitiendo el datagrama: {data} a través del transmisor\n")
     
@@ -30,12 +26,17 @@ class Transmisor:
         print(f"Transmisor recibiendo los datos: {data}\n")
 
     def codificar(self, data):
+
+        def string_a_binario(cadena):
+            binario = ''.join(format(ord(char), '08b') for char in cadena)
+            return binario
+
         print(f"Codificando datos: {data}\n")
 
-        id_binario = self.string_a_binario(data["id"])
-        skin_binario = self.string_a_binario(data["Player_skin"])
-        emote_binario = self.string_a_binario(data["Using_emote"])
-        glider_binario = self.string_a_binario(data["Player_glider"])
+        id_binario = string_a_binario(data["id"])
+        skin_binario = string_a_binario(data["Player_skin"])
+        emote_binario = string_a_binario(data["Using_emote"])
+        glider_binario = string_a_binario(data["Player_glider"])
 
         datagrama_binario = id_binario + skin_binario + emote_binario + glider_binario
 
@@ -118,7 +119,7 @@ def datagramas(values):
     # }
 
     datagram = {
-        "id": 1,
+        "id": "1",
         "Player_skin": "spiderman",
         "Using_emote": "happy",
         "Player_glider": "blue" 
