@@ -1,19 +1,32 @@
-datagram = {
-    "id": "1",
-    "Player_skin": "spiderman",
-    "Using_emote": "happy",
-    "Player_glider": "blue" 
+huffman_tree = {
+    '0': {
+        '0': 'A',
+        '1': {
+            '0': 'C',
+            '1': 'D'
+        }
+    },
+    '1': 'B',
+
 }
 
-def string_a_binario(cadena):
-    binario = ''.join(format(ord(char), '08b') for char in cadena)
-    return binario
-id_binario = string_a_binario(datagram["id"])
-skin_binario = string_a_binario(datagram["Player_skin"])
-emote_binario = string_a_binario(datagram["Using_emote"])
-glider_binario = string_a_binario(datagram["Player_glider"])
+codigo_binario = "0011000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011100110111000001101001011001000110010101110010011011010110000101101110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001101000011000010111000001110000011110010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000110001001101100011101010110010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 
-datagrama_binario = id_binario + skin_binario + emote_binario + glider_binario
+def binario_a_simbolos(codigo_binario, huffman_tree):
+    resultado = ""
+    nodo_actual = huffman_tree
+    
+    for bit in codigo_binario:
+        if bit in nodo_actual:
+            nodo_actual = nodo_actual[bit]
+            if isinstance(nodo_actual, str): 
+                resultado += nodo_actual
+                nodo_actual = huffman_tree  
+        else:
+            raise ValueError("Código binario no válido")
+    
+    return resultado
 
-print("Datagrama en binario (todos los campos):")
-print(datagrama_binario)
+simbolos = binario_a_simbolos(codigo_binario, huffman_tree)
+print("Símbolos decodificados:", simbolos)
+
