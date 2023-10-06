@@ -19,6 +19,10 @@ class Transmisor:
     def __init__(self, data):
         self.data = data
 
+    def string_a_binario(cadena):
+        binario = ''.join(format(ord(char), '08b') for char in cadena)
+        return binario
+
     def transmitir(self, data):
         print(f"Transmitiendo el datagrama: {data} a través del transmisor\n")
     
@@ -27,18 +31,16 @@ class Transmisor:
 
     def codificar(self, data):
         print(f"Codificando datos: {data}\n")
-        formato = "32s 32s 32s 32s"
 
-        #valores en binario
-        packed_data = struct.pack(formato, str(data["id"]).encode(), 
-                                  data["Player_skin"].encode(), 
-                                  data["Using_emote"].encode(),
-                                    data["Player_glider"].encode())
+        id_binario = self.string_a_binario(data["id"])
+        skin_binario = self.string_a_binario(data["Player_skin"])
+        emote_binario = self.string_a_binario(data["Using_emote"])
+        glider_binario = self.string_a_binario(data["Player_glider"])
 
-        binary_str = ''.join(format(byte, '08b') for byte in packed_data)
-        print(f"Datagrama codificado: {binary_str}\n")
+        datagrama_binario = id_binario + skin_binario + emote_binario + glider_binario
 
-        return packed_data
+        print("Datagrama en binario (todos los campos):")
+        print(datagrama_binario)
 
 class Canal:
     def __init__(self, binaryData):
@@ -65,7 +67,6 @@ class Canal:
             if probabilidad in umbral:
                 new_data[i] = random.randint(0, 255)
         return bytes(new_data)
-
 
 
 class ConsolaNintendoSwitchOLED:
@@ -109,11 +110,18 @@ def datagramas(values):
 
     randParameter = random.choice(values)
 
+    # datagram = {
+    #     "id": numrand,
+    #     "Player_skin": requestRandomSkins(),
+    #     "Using_emote": requestRandomEmote(),
+    #     "Player_glider": requestRandomGlider() 
+    # }
+
     datagram = {
-        "id": numrand,
-        "Player_skin": requestRandomSkins(),
-        "Using_emote": requestRandomEmote(),
-        "Player_glider": requestRandomGlider() 
+        "id": 1,
+        "Player_skin": "spiderman",
+        "Using_emote": "happy",
+        "Player_glider": "blue" 
     }
 
     routerTplink.recibir(datagram)
@@ -132,7 +140,9 @@ def datagramas(values):
 r = 0
 sr = 0
 
-values = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 0.9]
+# values = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 0.9]
+
+values = [0]
 
 total = len(values)
 
@@ -143,12 +153,12 @@ for i in range(0,total):
     else:
         r = r + 1
 
-print("Sin ruido", sr, "Con ruido", r)
+# print("Sin ruido", sr, "Con ruido", r)
 
-proba = 1/total
+# proba = 1/total
 
-entropia = - proba * math.log2(proba)
+# entropia = - proba * math.log2(proba)
 
-entropia_total = entropia*r
+# entropia_total = entropia*r
 
-print("Entropía: ", entropia_total)
+# print("Entropía: ", entropia_total)
