@@ -43,6 +43,8 @@ class Transmisor:
         print("Datagrama en binario (todos los campos):")
         print(datagrama_binario)
 
+        return datagrama_binario
+
 class Canal:
     def __init__(self, binaryData):
         # self.datagramas = []
@@ -63,7 +65,7 @@ class Canal:
         for i in range(len(new_data)):
             a = random.random() 
 
-            umbral = [0.2, 0.4, 0.7, 0.9]
+            umbral = [0.11]
 
             if probabilidad in umbral:
                 new_data[i] = random.randint(0, 255)
@@ -141,9 +143,7 @@ def datagramas(values):
 r = 0
 sr = 0
 
-# values = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 0.9]
-
-values = [0]
+values = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 0.9]
 
 total = len(values)
 
@@ -154,12 +154,12 @@ for i in range(0,total):
     else:
         r = r + 1
 
-# print("Sin ruido", sr, "Con ruido", r)
+print("Sin ruido", sr, "Con ruido", r)
 
-# proba = 1/total
+proba = 1/total
 
-# entropia = - proba * math.log2(proba)
+entropia = - proba * math.log2(proba)
 
-# entropia_total = entropia*r
+entropia_total = entropia*r
 
-# print("Entropía: ", entropia_total)
+print("Entropía: ", entropia_total)
