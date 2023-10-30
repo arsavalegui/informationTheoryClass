@@ -2,7 +2,7 @@ import pandas as pd
 import random as random
 import requests
 
-def requestRandomThing(df,columna):
+def requestRandomThing(df, columna):
 
     while True:
         id_random = random.choice(df["ID"])
