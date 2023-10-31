@@ -73,17 +73,17 @@ class Transmisor:
 
             encoded_data = sf.encode(data_string)
             
-            print(f"Transmisor: Codificando datos con Shanon-fano... Datagrama codificado: {encoded_data_dict}\n")
+            print(f"Transmisor: Codificando datos con Shanon-fano... Datagrama codificado: {encoded_data}\n")
 
             return encoded_data, sf
 
         elif metodo == "morse":
-            encoded_str = '_'.join([tm(key) + ':' + tm(value) for key, value in data.items()])
+            encoded_str = '_|_'.join([tm(key) + '|' + tm(value) for key, value in data.items()])
             print(f"Transmisor: Codificando datos con codigo morse... Datagrama codificado: {encoded_str}\n")
 
             pms(encoded_str)
 
-            return encoded_str
+            return encoded_str, 0
         
         else:
             print("No llegó la solicitud correctamente.")
@@ -149,11 +149,12 @@ class ConsolaNintendoSwitchOLED:
         
         elif metodo == "morse":
             decoded_data = {}
-            for item in binario.split('_:_'):
-                key, value = item.split(':')
+            for item in binario.split('_|_'):
+                key, value = item.split('|')
                 decoded_data[mt(key)] = mt(value)
 
             print(f"{self.nombre}: Decodificando datos con codigo morse... Datos: {decoded_data}\n")
+            return decoded_data
 
 def simulacion_transmision():
     print("Selecciona el método de codificación:")
@@ -203,5 +204,5 @@ def simulacion_transmision():
     consola.decodificar(data_nintendo, metodo, obj)
 
     print("---------- Fin de la Transmisión ----------\n")
-
+# 
 simulacion_transmision()
