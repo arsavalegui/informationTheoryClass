@@ -1,6 +1,6 @@
-import heapq
-import struct
 import uuid
+import time
+import random
 from collections import defaultdict, Counter
 from morse import text_to_morse as tm, morse_to_text as mt, play_morse_sound as pms
 from huffman import HuffmanCoding
@@ -157,11 +157,42 @@ class ConsolaNintendoSwitchOLED:
             return decoded_data
 
 def simulacion_transmision():
+
+    def generar_datagrama():
+        random_uuid = uuid.uuid4()
+        uuid_str = str(random_uuid)
+
+        return {
+            "id": uuid_str,
+            "Player_skin": requestRandomSkins(),
+            "Using_emote": requestRandomEmote(),
+            "Player_glider": requestRandomGlider() 
+        }
+
+    def simulacion_canales():
+        PROBABILIDAD_RUIDO = 0.3
+        canales = [i for i in range(1, 6)] #matriz de canales
+        
+        print("\n---------- Simulación de Canales ----------\n")
+        canal_actual = 1
+        
+        while True:
+            datagrama = generar_datagrama()
+
+            if random.random() < PROBABILIDAD_RUIDO:
+                print(f"Ruido detectado en el canal {canal_actual}.")
+                canal_actual = random.choice([canal for canal in canales if canal != canal_actual])
+                print(f"Reenviando datos al canal {canal_actual}.\n")
+
+            print(f"Canal {canal_actual} transmitiendo datos: {datagrama}")
+            time.sleep(2)
+
     print("Selecciona el método de codificación:")
     print("1. Codificación 8 bits")
     print("2. Codificación Huffman")
     print("3. Codificación Shannon-Fano")
     print("4. Codificación morse")
+    print("5. Simulación de canales")
     opcion = input("Introduce el número de la opción deseada: ")
 
     if opcion == "1":
@@ -172,27 +203,20 @@ def simulacion_transmision():
         metodo = "shannon_fano"
     elif opcion == "4":
         metodo = "morse"
+    elif opcion == "5":
+        simulacion_canales()
+        return
     else:
         print("Opción no válida. Usando codificación normal (8 bits) por defecto.")
         metodo = "8bits"
 
-    random_uuid = uuid.uuid4()
-    uuid_str = str(random_uuid)
-
-    datagram = {
-        "id": uuid_str,
-        "Player_skin": requestRandomSkins(),
-        "Using_emote": requestRandomEmote(),
-        "Player_glider": requestRandomGlider() 
-    }
-
     print("\n---------- Inicio de la Transmisión ----------\n")
 
     wifi = WiFi("mySecretPassword")
-    data_wifi = wifi.transmitir(datagram)
+    data_wifi = wifi.transmitir(generar_datagrama())
 
     transmisor = Transmisor(data_wifi)
-    data_codificada, obj = transmisor.codificar(datagram, metodo)
+    data_codificada, obj = transmisor.codificar(data_wifi, metodo)
     datagram = transmisor.transmitir(data_codificada)
 
     canal = Canal()
@@ -204,5 +228,5 @@ def simulacion_transmision():
     consola.decodificar(data_nintendo, metodo, obj)
 
     print("---------- Fin de la Transmisión ----------\n")
-# 
+
 simulacion_transmision()

@@ -1,6 +1,4 @@
 import heapq
-from collections import defaultdict, Counter
-from uuid import UUID
 
 class Node:
     def __init__(self, char, freq):
